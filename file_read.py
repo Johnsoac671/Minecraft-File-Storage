@@ -1,11 +1,11 @@
 import json
 import amulet
-import magic
 from amulet.api import Block
+from amulet.api.errors import ChunkDoesNotExist
 from amulet.utils.world_utils import block_coords_to_chunk_coords
 
-SAVE = r"C:\Users\johns\AppData\Roaming\.minecraft\saves\New World (13)"
-EXTENSION = ".png"
+SAVE = r"C:\Users\johns\AppData\Roaming\.minecraft\saves\storage"
+EXTENSION = ".mp4"
 
 def encode_file():
     with open("data\\lookup.json", "r") as file:
@@ -18,6 +18,9 @@ def encode_file():
             for line in input_file:
                 for char in line:
                     out.write(lookup[str(char)] + "\n")
+            
+            # marks end of file
+            out.write("AIR")
 
 
 def read_blocks():
@@ -45,32 +48,35 @@ def write_blocks():
     
     with open("data\\Materials.txt", "r") as file:
         lines = file.readlines()
-        
-        for material in lines:
-            # creates a tuple representing a block, it's entities, and extra data
-            (block, entity, _) = level.translation_manager.get_version("java", (1, 20, 4)).block.to_universal(Block("minecraft", material.lower().strip("\n")))
-            
-            block_id = level.block_palette.get_add_block(block)
-            
-            # getting the location of coordinates in terms of chunks
-            cx, cz = block_coords_to_chunk_coords(x, z)
-            chunk = level.get_chunk(cx, cz, "minecraft:overworld")
-            offset_x, offset_z = x % 16, z % 16
-            
-            location = (offset_x, y, offset_z)
-            # places the block in the world
-            chunk.blocks[location] = block_id
-            
-            
-            # updates entity if needed
-            if entity is not None:
-                chunk.block_entities[location] = entity
-            elif (location) in chunk.block_entities:
-                del chunk.block_entities[location]
+        try:
+            for material in lines:
+                # creates a tuple representing a block, it's entities, and extra data
+                (block, entity, _) = level.translation_manager.get_version("java", (1, 20, 4)).block.to_universal(Block("minecraft", material.lower().strip("\n")))
                 
-            chunk.changed = True
-            
-            x, y, z = update_coordinates(x, y, z)
+                block_id = level.block_palette.get_add_block(block)
+                
+                # getting the location of coordinates in terms of chunks
+                cx, cz = block_coords_to_chunk_coords(x, z)
+                chunk = level.get_chunk(cx, cz, "minecraft:overworld")
+                offset_x, offset_z = x % 16, z % 16
+                
+                location = (offset_x, y, offset_z)
+                # places the block in the world
+                chunk.blocks[location] = block_id
+                
+                
+                # updates entity if needed
+                if entity is not None:
+                    chunk.block_entities[location] = entity
+                elif (location) in chunk.block_entities:
+                    del chunk.block_entities[location]
+                    
+                chunk.changed = True
+                
+                x, y, z = update_coordinates(x, y, z)
+        except ChunkDoesNotExist:
+            print(f"Coordinates: {x}, {y}, {z}")
+            print(f"Chunk Coordinates: {cx}, {cz}")
     
     # saves changes
     level.save()
@@ -129,16 +135,18 @@ def update_coordinates(x, y, z):
             y += 1
                     
             if y == 300:
-                x += 64
+                if x % 128 == 0:
+                    z += 64
+                else:
+                    x += 64
                 y = 80
-                z += 64
                 
     return x, y, z
 
 
 if __name__ == "__main__":             
-    encode_file()
+    #encode_file()
     write_blocks()
-    read_blocks()
-    decode_file()
+    #read_blocks()
+    #decode_file()
     
