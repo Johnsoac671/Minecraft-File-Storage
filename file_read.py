@@ -269,7 +269,7 @@ def decode_file(extension=".txt"):
     decodes file stored inside Minecraft world
     
     arguments:
-        extension (string): extension of file to be encoded, including "." (default ".txt")
+        extension (string | optional): extension of file to be encoded, including "." (default ".txt")
             
     Outputs:
         output.extension: decoded file of given extension
@@ -293,11 +293,10 @@ def decode_file(extension=".txt"):
             for value in byte_data:
                 output.write(value.to_bytes())
     
-save = r"C:\Users\johns\AppData\Roaming\.minecraft\saves\New World (14)"
+save = r"C:\Users\<user_name>\AppData\Roaming\.minecraft\saves\<world_name>"
 
-if __name__ == "__main__":    
-    clear_blocks(save)         
+if __name__ == "__main__":            
     encode_file("input.txt")
-    write_blocks(r"C:\Users\johns\AppData\Roaming\.minecraft\saves\New World (14)")
-    #read_blocks()
-    #decode_file()
+    write_blocks(save)
+    read_blocks(save)
+    decode_file()
