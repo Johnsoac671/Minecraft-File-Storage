@@ -269,7 +269,7 @@ def decode_file(extension=".txt"):
     decodes file stored inside Minecraft world
     
     arguments:
-        extension (string): extension of file to be encoded, including "." (default ".txt")
+        extension (string | optional): extension of file to be encoded, including "." (default ".txt")
             
     Outputs:
         output.extension: decoded file of given extension
