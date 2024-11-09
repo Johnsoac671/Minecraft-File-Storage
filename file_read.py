@@ -293,11 +293,11 @@ def decode_file(extension=".txt"):
             for value in byte_data:
                 output.write(value.to_bytes())
     
-save = r"C:\Users\johns\AppData\Roaming\.minecraft\saves\New World (14)"
+save = r"C:\Users\johns\AppData\Roaming\.minecraft\saves\my_world"
 
 if __name__ == "__main__":    
     clear_blocks(save)         
-    encode_file("input.txt")
-    write_blocks(r"C:\Users\johns\AppData\Roaming\.minecraft\saves\New World (14)")
-    #read_blocks()
-    #decode_file()
+    encode_file("cactus.png")
+    write_blocks(save)
+    # read_blocks(save)
+    # decode_file(".png")
