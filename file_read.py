@@ -293,9 +293,12 @@ def decode_file(extension=".txt"):
             for value in byte_data:
                 output.write(value.to_bytes())
     
-save = r"C:\Users\johns\AppData\Roaming\.minecraft\saves\my_world"
 
-if __name__ == "__main__":    
+
+if __name__ == "__main__": 
+    
+    save = input("Location of Minecraft World: ")
+    
     clear_blocks(save)         
     encode_file("cactus.png")
     write_blocks(save)
